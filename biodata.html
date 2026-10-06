@@ -20,57 +20,197 @@
     </nav>
 
     <main>
-        <section>
-            <h2>Personal Details</h2>
+        <form id="biodataForm">
 
-            <table>
-                <tr>
-                    <th>Field</th>
-                    <th>Details</th>
-                </tr>
-                <tr>
-                    <td>Name</td>
-                    <td>Dhruva S</td>
-                </tr>
-                <tr>
-                    <td>Date of Birth</td>
-                    <td>Enter your date of birth</td>
-                </tr>
-                <tr>
-                    <td>Gender</td>
-                    <td>Enter your gender</td>
-                </tr>
-                <tr>
-                    <td>Nationality</td>
-                    <td>Enter your nationality</td>
-                </tr>
-                <tr>
-                    <td>Languages Known</td>
-                    <td>Enter your languages</td>
-                </tr>
-                <tr>
-                    <td>Address</td>
-                    <td>Enter your address</td>
-                </tr>
-                <tr>
-                    <td>Hobbies</td>
-                    <td>Reading, coding and listening to music</td>
-                </tr>
-            </table>
-        </section>
+            <section>
+                <h2>Personal Details</h2>
 
-        <section>
-            <h2>Declaration</h2>
-            <p>I declare that the information provided above is true
-            to the best of my knowledge.</p>
-            <p>Place: Bengaluru</p>
-            <p>Signature: Dhruva S</p>
-        </section>
+                <table>
+                    <tr>
+                        <th>Field</th>
+                        <th>Details</th>
+                    </tr>
+
+                    <tr>
+                        <td>Name</td>
+                        <td>
+                            <input type="text" name="name"
+                            placeholder="Enter your name">
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>Date of Birth</td>
+                        <td>
+                            <input type="date" name="dob">
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>Age</td>
+                        <td>
+                            <input type="number" name="age"
+                            min="1" max="120" placeholder="Enter your age">
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>Gender</td>
+                        <td>
+                            <select name="gender">
+                                <option value="">Select gender</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Other">Other</option>
+                                <option value="Prefer not to say">
+                                    Prefer not to say
+                                </option>
+                            </select>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>Nationality</td>
+                        <td>
+                            <input type="text" name="nationality"
+                            placeholder="Enter your nationality">
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>Languages Known</td>
+                        <td>
+                            <input type="text" name="languages"
+                            placeholder="Enter languages known">
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>Address</td>
+                        <td>
+                            <textarea name="address" rows="3"
+                            placeholder="Enter your address"></textarea>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>Hobbies</td>
+                        <td>
+                            <input type="text" name="hobbies"
+                            placeholder="Enter your hobbies">
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>Email</td>
+                        <td>
+                            <input type="email" name="email"
+                            placeholder="Enter your email">
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>Phone Number</td>
+                        <td>
+                            <input type="tel" name="phone"
+                            placeholder="Enter your phone number">
+                        </td>
+                    </tr>
+                </table>
+            </section>
+
+            <section>
+                <h2>Declaration</h2>
+
+                <p>
+                    I declare that the information provided above
+                    is true to the best of my knowledge.
+                </p>
+
+                <p>
+                    Place:
+                    <input type="text" name="place"
+                    placeholder="Enter place">
+                </p>
+
+                <p>
+                    Signature:
+                    <input type="text" name="signature"
+                    placeholder="Type your name">
+                </p>
+            </section>
+
+            <section>
+                <button type="submit">Save Bio-data</button>
+                <button type="button" id="printButton">
+                    Print Bio-data
+                </button>
+                <button type="button" id="clearButton">
+                    Clear All
+                </button>
+
+                <p id="status" aria-live="polite"></p>
+            </section>
+
+        </form>
     </main>
 
     <footer>
-        <p>Copyright 2026 | Dhruva S</p>
+        <p>Copyright 2026 | Bio-data</p>
     </footer>
+
+    <script>
+        const form = document.getElementById("biodataForm");
+        const statusMessage = document.getElementById("status");
+        const storageKey = "myBiodataDetails";
+
+        // Load previously saved details
+        function loadBiodata() {
+            const savedData = localStorage.getItem(storageKey);
+
+            if (!savedData) return;
+
+            const details = JSON.parse(savedData);
+
+            for (const field of form.elements) {
+                if (field.name && details[field.name] !== undefined) {
+                    field.value = details[field.name];
+                }
+            }
+        }
+
+        // Save details in this browser
+        form.addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            const details = {};
+
+            for (const field of form.elements) {
+                if (field.name) {
+                    details[field.name] = field.value;
+                }
+            }
+
+            localStorage.setItem(storageKey, JSON.stringify(details));
+            statusMessage.textContent = "Bio-data saved successfully!";
+        });
+
+        // Print the completed bio-data
+        document.getElementById("printButton").addEventListener("click", function() {
+            window.print();
+        });
+
+        // Clear saved details and empty the form
+        document.getElementById("clearButton").addEventListener("click", function() {
+            if (confirm("Are you sure you want to clear all your bio-data?")) {
+                localStorage.removeItem(storageKey);
+                form.reset();
+                statusMessage.textContent = "All details cleared.";
+            }
+        });
+
+        loadBiodata();
+    </script>
 
 </body>
 </html>
